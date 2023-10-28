@@ -1,0 +1,16 @@
+{
+  "require": {
+    "nutgram/nutgram": "^4.10",
+    "knplabs/knp-snappy": "^1.4",
+    "vlucas/phpdotenv": "^5.5",
+    "symfony/cache": "^6.3",
+    "illuminate/database": "^10.29",
+    "mmeyer2k/dcrypt": "^13.2",
+    "ext-openssl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app"
+    }
+  }
+}
