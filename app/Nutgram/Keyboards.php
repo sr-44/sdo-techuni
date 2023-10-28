@@ -2,8 +2,10 @@
 
 namespace App\Nutgram;
 
+use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
 class Keyboards
@@ -23,4 +25,20 @@ class Keyboards
         return new ReplyKeyboardRemove(true);
     }
 
+    public static function actionsKeyboards(Nutgram $bot): ReplyKeyboardMarkup
+    {
+        $markup = new ReplyKeyboardMarkup(true);
+
+        $markup->addRow(InlineKeyboardButton::make(
+            $bot->__('kbd.show.rating')
+        ));
+        $markup->addRow(InlineKeyboardButton::make(
+            $bot->__('kbd.show.info')
+        ));
+        $markup->addRow(InlineKeyboardButton::make(
+            $bot->__('kbd.logout')
+        ));
+        return $markup;
+
+    }
 }

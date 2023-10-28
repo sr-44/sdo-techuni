@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Commands\ChangeLanguageCommand;
 use App\Commands\RegisterUserCommand;
 use App\Handlers\CancelHandler;
 use App\Middlewares\SendLanguagesMiddleware;
@@ -33,7 +34,7 @@ $bot->middleware(SetLanguageMiddleware::class);
 
 
 $bot->onCommand('start', CancelHandler::class);
-
+$bot->onCommand('lang', ChangeLanguageCommand::class);
 $bot->onCallbackQueryData('lang_{lang_code}', RegisterUserCommand::class);
 
 
