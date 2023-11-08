@@ -3,6 +3,7 @@
 
 use App\Commands\ChangeLanguageCommand;
 use App\Commands\RegisterUserCommand;
+use App\Conversations\StudentActionsConversation;
 use App\Handlers\CancelHandler;
 use App\Middlewares\SendLanguagesMiddleware;
 use App\Middlewares\SetLanguageMiddleware;
@@ -35,6 +36,7 @@ $bot->middleware(SetLanguageMiddleware::class);
 
 $bot->onCommand('start', CancelHandler::class);
 $bot->onCommand('lang', ChangeLanguageCommand::class);
+$bot->onCommand('login', StudentActionsConversation::class);
 $bot->onCallbackQueryData('lang_{lang_code}', RegisterUserCommand::class);
 
 
@@ -42,5 +44,5 @@ $bot->onCallbackQueryData('lang_{lang_code}', RegisterUserCommand::class);
 
 try {
     $bot->run();
-} catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+} catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
 }
