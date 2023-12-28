@@ -15,7 +15,7 @@ use SergiX44\Nutgram\Logger\ConsoleLogger;
 use SergiX44\Nutgram\Nutgram;
 
 require_once 'vendor/autoload.php';
-require_once 'app/helpers/create_tables.php';
+require_once 'app/bootstrap.php';
 if (config('debug') === 'true') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
