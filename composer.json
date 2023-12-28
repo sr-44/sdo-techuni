@@ -6,7 +6,8 @@
     "symfony/cache": "^6.3",
     "illuminate/database": "^10.29",
     "mmeyer2k/dcrypt": "^13.2",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "symfony/dom-crawler": "^7.0"
   },
   "autoload": {
     "psr-4": {
