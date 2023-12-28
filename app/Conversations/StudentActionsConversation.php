@@ -26,7 +26,7 @@ class StudentActionsConversation extends Conversation
      */
     public function start(Nutgram $bot): void
     {
-        $user = User::where('user_id', $bot->userId())->get()->first();
+        $user = User::where('user_id', $bot->userId())->first();
         if ($user->encrypted_login && $user->encrypted_password) {
             $bot->setUserData('login', $user->encrypted_login);
             $bot->setUserData('password', $user->encrypted_password);
@@ -99,8 +99,8 @@ class StudentActionsConversation extends Conversation
             'allow_redirects' => true,
         ]);
         $bot->deleteMessage($bot->chatId(), $wait);
-        if (mb_stripos($response->getBody(), 'Дарсҳои ман') !== false) {
-            $user = User::where('user_id', $bot->userId())->get()->first();
+        if (str_contains($response->getBody(), 'Дарсҳои ман')) {
+            $user = User::where('user_id', $bot->userId())->first();
             $user->encrypted_login = $bot->getUserData('login');
             $user->encrypted_password = $bot->getUserData('password');
             $user->save();

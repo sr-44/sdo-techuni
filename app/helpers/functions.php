@@ -53,3 +53,11 @@ if (!function_exists('getRequest')) {
         ]))->request('GET', $uri);
     }
 }
+
+
+if (!function_exists('toBool')) {
+    function toBool(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+}

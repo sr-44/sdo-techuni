@@ -1,5 +1,5 @@
 <?php
-require_once 'vendor/autoload.php';
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -8,7 +8,6 @@ return [
         'token' => $_ENV['API_KEY'],
         'username' => $_ENV['BOT_USERNAME'],
         'owner' => $_ENV['OWNER_ID'],
-
     ],
 
     'database' => [
@@ -21,7 +20,6 @@ return [
         'collation' => 'utf8mb4_bin',
         'prefix' => '',
     ],
-
     'encryption_key' => $_ENV['ENCRYPTION_KEY'],
-    'debug' => $_ENV['DEBUG'],
+    'debug' => toBool($_ENV['DEBUG']),
 ];

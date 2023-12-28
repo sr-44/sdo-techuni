@@ -15,7 +15,7 @@ class RegisterUserCommand
     public function __invoke(Nutgram $bot, $lang_code): void
     {
         $bot->answerCallbackQuery();
-        $user = User::where('user_id', $bot->userId())->get()->first();
+        $user = User::where('user_id', $bot->userId())->first();
         if (!$user) {
             User::create([
                 'user_id' => $bot->userId(),
