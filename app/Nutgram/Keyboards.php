@@ -2,6 +2,7 @@
 
 namespace App\Nutgram;
 
+use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
@@ -10,6 +11,19 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
 class Keyboards
 {
+
+    public static function mainMenu(Nutgram $bot): ReplyKeyboardMarkup
+    {
+        $markup = new ReplyKeyboardMarkup(true);
+        $markup->addRow(InlineKeyboardButton::make(
+            $bot->__('kbd.login')), InlineKeyboardButton::make(
+            $bot->__('kbd.lang'))
+        );
+        $markup->addRow(InlineKeyboardButton::make(
+            $bot->__('kbd.about')
+        ));
+        return $markup;
+    }
     public static function selectLanguage(): InlineKeyboardMarkup
     {
         $markup = new InlineKeyboardMarkup();
@@ -25,16 +39,23 @@ class Keyboards
         return new ReplyKeyboardRemove(true);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public static function actionsKeyboards(Nutgram $bot): ReplyKeyboardMarkup
     {
         $markup = new ReplyKeyboardMarkup(true);
 
         $markup->addRow(InlineKeyboardButton::make(
             $bot->__('kbd.show.rating')
-        ));
-        $markup->addRow(InlineKeyboardButton::make(
+        ), InlineKeyboardButton::make(
             $bot->__('kbd.show.info')
         ));
+        if ($bot->getUserData('sessions')) {
+            $markup->addRow(InlineKeyboardButton::make(
+                $bot->__('kbd.show.sessions')
+            ));
+        }
         $markup->addRow(InlineKeyboardButton::make(
             $bot->__('kbd.logout')
         ));

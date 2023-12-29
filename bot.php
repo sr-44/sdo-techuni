@@ -13,7 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SergiX44\Nutgram\Configuration;
 use SergiX44\Nutgram\Logger\ConsoleLogger;
 use SergiX44\Nutgram\Nutgram;
-use Symfony\Component\DomCrawler\Crawler;
+use SergiX44\Nutgram\Telegram\Properties\MessageType;
 
 require_once 'vendor/autoload.php';
 require_once 'app/bootstrap.php';
@@ -38,6 +38,16 @@ $bot->middleware(SetLanguageMiddleware::class);
 $bot->onCommand('start', CancelHandler::class);
 $bot->onCommand('lang', ChangeLanguageCommand::class);
 $bot->onCommand('login', StudentActionsConversation::class);
+
+$bot->onMessageType(MessageType::TEXT, function (Nutgram $bot) {
+    if ($bot->message()->text === $bot->__('kbd.login')) {
+        (new StudentActionsConversation())($bot);
+    } elseif ($bot->message()->text === $bot->__('kbd.lang')) {
+        (new ChangeLanguageCommand())($bot);
+    } elseif ($bot->message()->text === $bot->__('kbd.about')) {
+        $bot->sendMessage($bot->__('about'));
+    }
+});
 $bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);
 
 

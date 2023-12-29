@@ -9,5 +9,10 @@ return [
     'wrong_datas' => 'Login or password is incorrect! Please try again',
     'kbd.show.rating' => 'Ratings',
     'kbd.show.info' => 'My information',
+    'kbd.login' => 'Login',
+    'kbd.lang' => 'Change Language',
+    'kbd.about' => 'About bot',
     'kbd.logout' => 'Logout',
+    'about' => 'This bot was created for TTU students to get their ratings and other information.',
+    'student_info' => 'Student information:' . PHP_EOL . 'Name: :name' . PHP_EOL . 'Login: :login',
 ];

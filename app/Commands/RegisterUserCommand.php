@@ -27,13 +27,14 @@ class RegisterUserCommand
                 'username' => $bot->user()->username,
                 'language' => $lang_code,
             ]);
-            $bot->setUserData('lang_code', $lang_code);
+            $bot->set('lang_code', $lang_code);
             $bot->sendMessage($bot->__('greeting_text', [':name' => $bot->user()->first_name]));
         } else {
             $user->language = $lang_code;
             $user->save();
-            $bot->setUserData('lang_code', $lang_code);
+//            $bot->setUserData('lang_code', $lang_code);
         }
+        $bot->set('lang_code', $lang_code);
         (new StartCommand())($bot);
         $bot->message()?->delete();
 

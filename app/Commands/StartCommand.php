@@ -14,9 +14,9 @@ class StartCommand
      */
     public function __invoke(Nutgram $bot): void
     {
-        $bot->sendMessage($bot->__('main_menu'), parse_mode: ParseMode::HTML, reply_markup: Keyboards::removeKeyboards());
+        $bot->sendMessage($bot->__('main_menu'), parse_mode: ParseMode::HTML, reply_markup: Keyboards::mainMenu($bot));
         $bot->endConversation();
-        $bot->clear();
+//        $bot->clear();
     }
 
 }
