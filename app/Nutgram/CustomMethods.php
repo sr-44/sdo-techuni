@@ -12,8 +12,7 @@ class CustomMethods
     {
         return function (string $key = null, array $values = []) {
             /** @var Nutgram $this */
-            $langCode = $this->get('lang_code');
-            var_dump($langCode);
+            $langCode = $this->getUserData('lang_code');
             if (($langCode !== null) && file_exists("lang/$langCode.php")) {
                 $texts = require "lang/$langCode.php";
             } else {

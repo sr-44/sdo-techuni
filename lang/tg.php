@@ -13,6 +13,7 @@ return [
     'kbd.login' => 'Ворид шудан',
     'kbd.lang' => 'Тағйирдихии забон',
     'kbd.about' => 'Дар бораи бот',
+    'kbd.show.sessions' => 'Ҷадвали экзаменҳо',
     'about' => 'Ин бот барои донишҷӯёни ТТУ барои гирифтани рейтингҳо ва дигар маълумотҳо сохта шудааст.',
     'student_info' => 'Маълумоти донишҷӯ:' . PHP_EOL . 'Ном: :name' . PHP_EOL . 'Логин: :login',
     'kbd.logout' => 'Баромадан',
@@ -29,9 +30,9 @@ return [
 
 
     'exam_table.subject_name' => 'Номи фан',
-    'exam_table.teacher' => 'Муаллим',
+    'exam_table.teachers' => 'Муаллим',
     'exam_table.date' => 'Сана',
-    'exam_table.time' => 'Вақт',
-    'exam_table.question.qty' => 'Миқдори саволҳо',
+    'exam_table.exam_type' => 'Намуди экзамен',
+    'exam_table.question_qty' => 'Миқдори саволҳо',
 
 ];

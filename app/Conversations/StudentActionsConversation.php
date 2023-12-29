@@ -50,7 +50,7 @@ class StudentActionsConversation extends Conversation
      */
     public function firstStep(Nutgram $bot): void
     {
-        $bot->sendMessage($bot->__('send_login'));
+        $bot->sendMessage($bot->__('send_login'), reply_markup: Keyboards::removeKeyboards());
         $this->next('secondStep');
     }
 

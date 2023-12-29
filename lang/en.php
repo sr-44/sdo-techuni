@@ -13,6 +13,7 @@ return [
     'kbd.lang' => 'Change Language',
     'kbd.about' => 'About bot',
     'kbd.logout' => 'Logout',
+    'kbd.show.sessions' => 'Exam table',
     'about' => 'This bot was created for TTU students to get their ratings and other information.',
     'student_info' => 'Student information:' . PHP_EOL . 'Name: :name' . PHP_EOL . 'Login: :login',
 
@@ -28,8 +29,8 @@ return [
     'rating_table.mark' => 'Mark',
 
     'exam_table.subject_name' => 'Subject name',
-    'exam_table.teacher' => 'Teacher',
+    'exam_table.exam_type' => 'Exam type',
+    'exam_table.teachers' => 'Teacher',
     'exam_table.date' => 'Date',
-    'exam_table.time' => 'Time',
-    'exam_table.question.qty' => 'Question quantity',
+    'exam_table.question_qty' => 'Question quantity',
 ];

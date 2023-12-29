@@ -13,6 +13,7 @@ return [
     'kbd.login' => 'Войти',
     'kbd.lang' => 'Изменить язык',
     'kbd.about' => 'О боте',
+    'kbd.show.sessions' => 'Расписание экзаменов',
     'about' => 'Этот бот был создан для студентов ТТУ, чтобы получать свои рейтинги и другую информацию.',
     'student_info' => 'Информация о студенте:' . PHP_EOL . 'Имя: :name' . PHP_EOL . 'Логин: :login',
     'kbd.logout' => 'Выход',
@@ -29,8 +30,8 @@ return [
 
 
     'exam_table.subject_name' => 'Название предмета',
-    'exam_table.teacher' => 'Преподаватель',
+    'exam_table.teachers' => 'Преподаватель',
     'exam_table.date' => 'Дата',
-    'exam_table.time' => 'Время',
-    'exam_table.question.qty' => 'Количество вопросов',
+    'exam_table.exam_type' => 'Тип экзамена',
+    'exam_table.question_qty' => 'Количество вопросов',
 ];
