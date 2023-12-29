@@ -12,8 +12,13 @@ class RegisterUserCommand
     /**
      * @throws InvalidArgumentException
      */
-    public function __invoke(Nutgram $bot, $lang_code): void
+    public function __invoke(Nutgram $bot): void
     {
+        $lang_code = explode('lang_', $bot->callbackQuery()->data, limit: 2)[1];
+        if (!in_array($lang_code, ['en', 'ru', 'tg'])) {
+            $bot->answerCallbackQuery(text: $bot->__('Language not available'));
+            return;
+        }
         $bot->answerCallbackQuery();
         $user = User::where('user_id', $bot->userId())->first();
         if (!$user) {

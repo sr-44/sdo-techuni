@@ -13,6 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SergiX44\Nutgram\Configuration;
 use SergiX44\Nutgram\Logger\ConsoleLogger;
 use SergiX44\Nutgram\Nutgram;
+use Symfony\Component\DomCrawler\Crawler;
 
 require_once 'vendor/autoload.php';
 require_once 'app/bootstrap.php';
@@ -37,8 +38,7 @@ $bot->middleware(SetLanguageMiddleware::class);
 $bot->onCommand('start', CancelHandler::class);
 $bot->onCommand('lang', ChangeLanguageCommand::class);
 $bot->onCommand('login', StudentActionsConversation::class);
-$bot->onCallbackQueryData('lang_{lang_code}', RegisterUserCommand::class);
-
+$bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);
 
 
 
