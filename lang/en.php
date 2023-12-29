@@ -15,4 +15,21 @@ return [
     'kbd.logout' => 'Logout',
     'about' => 'This bot was created for TTU students to get their ratings and other information.',
     'student_info' => 'Student information:' . PHP_EOL . 'Name: :name' . PHP_EOL . 'Login: :login',
+
+
+
+    'rating_table.subject_name' => 'Subject name',
+    'rating_table.teacher' => 'Teacher',
+    'rating_table.credits' => 'Credits',
+    'rating_table.rating_1' => 'Rating 1',
+    'rating_table.rating_2' => 'Rating 2',
+    'rating_table.exam' => 'Exam',
+    'rating_table.sum' => 'Sum',
+    'rating_table.mark' => 'Mark',
+
+    'exam_table.subject_name' => 'Subject name',
+    'exam_table.teacher' => 'Teacher',
+    'exam_table.date' => 'Date',
+    'exam_table.time' => 'Time',
+    'exam_table.question.qty' => 'Question quantity',
 ];

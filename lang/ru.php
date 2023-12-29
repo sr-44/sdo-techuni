@@ -16,4 +16,21 @@ return [
     'about' => 'Этот бот был создан для студентов ТТУ, чтобы получать свои рейтинги и другую информацию.',
     'student_info' => 'Информация о студенте:' . PHP_EOL . 'Имя: :name' . PHP_EOL . 'Логин: :login',
     'kbd.logout' => 'Выход',
+
+
+    'rating_table.subject_name' => 'Название предмета',
+    'rating_table.teacher' => 'Преподаватель',
+    'rating_table.credits' => 'Кредиты',
+    'rating_table.rating_1' => 'Рейтинг 1',
+    'rating_table.rating_2' => 'Рейтинг 2',
+    'rating_table.exam' => 'Экзамен',
+    'rating_table.sum' => 'Сумма',
+    'rating_table.mark' => 'Оценка',
+
+
+    'exam_table.subject_name' => 'Название предмета',
+    'exam_table.teacher' => 'Преподаватель',
+    'exam_table.date' => 'Дата',
+    'exam_table.time' => 'Время',
+    'exam_table.question.qty' => 'Количество вопросов',
 ];

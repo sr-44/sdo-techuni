@@ -16,4 +16,22 @@ return [
     'about' => 'Ин бот барои донишҷӯёни ТТУ барои гирифтани рейтингҳо ва дигар маълумотҳо сохта шудааст.',
     'student_info' => 'Маълумоти донишҷӯ:' . PHP_EOL . 'Ном: :name' . PHP_EOL . 'Логин: :login',
     'kbd.logout' => 'Баромадан',
+
+
+    'rating_table.subject_name' => 'Номи фан',
+    'rating_table.teacher' => 'Муаллим',
+    'rating_table.credits' => 'Кредитҳо',
+    'rating_table.rating_1' => 'Рейтинг 1',
+    'rating_table.rating_2' => 'Рейтинг 2',
+    'rating_table.exam' => 'Экзамен',
+    'rating_table.sum' => 'Ҷамъ',
+    'rating_table.mark' => 'Баҳо',
+
+
+    'exam_table.subject_name' => 'Номи фан',
+    'exam_table.teacher' => 'Муаллим',
+    'exam_table.date' => 'Сана',
+    'exam_table.time' => 'Вақт',
+    'exam_table.question.qty' => 'Миқдори саволҳо',
+
 ];

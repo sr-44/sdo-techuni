@@ -30,7 +30,8 @@ class StudentActionsConversation extends Conversation
     {
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $user = User::where('user_id', $bot->userId())->first();
         if ($user->encrypted_login && $user->encrypted_password) {
@@ -65,7 +66,8 @@ class StudentActionsConversation extends Conversation
         }
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $bot->setUserData('login', encryptData($bot->message()->text));
         $bot->sendMessage($bot->__('send_password'));
@@ -83,7 +85,8 @@ class StudentActionsConversation extends Conversation
         }
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $bot->setUserData('password', encryptData($bot->message()->text));
         $this->sendRequest($bot);
@@ -127,15 +130,24 @@ class StudentActionsConversation extends Conversation
     {
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = 'tmp/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
-
-        $threadText = ['Subject Name', 'Credits', 'Rating 1', 'Rating 2', 'Exam', 'Sum', 'Human', 'Teacher'];
+        $threadText = [
+            $bot->__('rating_table.subject_name'),
+            $bot->__('rating_table.credits'),
+            $bot->__('rating_table.rating_1'),
+            $bot->__('rating_table.rating_2'),
+            $bot->__('rating_table.exam'),
+            $bot->__('rating_table.sum'),
+            $bot->__('rating_table.mark'),
+            $bot->__('rating_table.teacher'),
+        ];
         $html = $pars->parseSubjectsTable()->arrayToHtmlTable($threadText)->getHtmlTable();
         echo $html;
         $imagePath = 'tmp/screens/' . $bot->userId() . '_' . Str::random() . '.jpg';
@@ -154,7 +166,8 @@ class StudentActionsConversation extends Conversation
     {
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = 'tmp/' . $bot->userId();
@@ -199,20 +212,28 @@ class StudentActionsConversation extends Conversation
     {
         try {
             $bot->message()->delete();
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = 'tmp/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
-        $threadText = ['Subject Name', 'Exam Type', 'Date', 'Teachers', 'Question qty'];
+        $threadText = [
+            $bot->__('exam_table.subject_name'),
+            $bot->__('exam_table.exam_type'),
+            $bot->__('exam_table.date'),
+            $bot->__('exam_table.teachers'),
+            $bot->__('exam_table.question_qty'),
+        ];
         $html = $pars->parseExamsTable()->arrayToHtmlTable($threadText)->getHtmlTable();
         $imagePath = 'tmp/screens/' . $bot->userId() . '_' . Str::random() . '.jpg';
         ImageFromHtml::generate($html, $imagePath);
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
         $wait->delete();
     }
+
     /**
      * @throws GuzzleException|InvalidArgumentException
      */
