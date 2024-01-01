@@ -6,6 +6,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
@@ -21,9 +22,10 @@ class Keyboards
         );
         $markup->addRow(InlineKeyboardButton::make(
             $bot->__('kbd.about')
-        ));
+        ), InlineKeyboardButton::make($bot->__('kbd.feedback')));
         return $markup;
     }
+
     public static function selectLanguage(): InlineKeyboardMarkup
     {
         $markup = new InlineKeyboardMarkup();
@@ -77,6 +79,13 @@ class Keyboards
         $markup->addRow(InlineKeyboardButton::make('Переслать', callback_data: 'forward'));
         $markup->addRow(InlineKeyboardButton::make('Отправить', callback_data: 'copy'));
         $markup->addRow(InlineKeyboardButton::make('Отмена', callback_data: 'cancel'));
+        return $markup;
+    }
+
+    public static function cancelButton(Nutgram $bot): ReplyKeyboardMarkup
+    {
+        $markup = new ReplyKeyboardMarkup(true);
+        $markup->addRow(KeyboardButton::make($bot->__('kbd.cancel')));
         return $markup;
     }
 }

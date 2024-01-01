@@ -4,6 +4,7 @@
 use App\Admin\AdminDashboardConversation;
 use App\Commands\ChangeLanguageCommand;
 use App\Commands\RegisterUserCommand;
+use App\Conversations\FeedBackConversation;
 use App\Conversations\StudentActionsConversation;
 use App\Handlers\CancelHandler;
 use App\Middlewares\IsBotOwnerMiddleware;
@@ -57,6 +58,8 @@ $bot->onMessageType(MessageType::TEXT, function (Nutgram $bot) {
         (new ChangeLanguageCommand())($bot);
     } elseif ($bot->message()->text === $bot->__('kbd.about')) {
         $bot->sendMessage($bot->__('about'));
+    } elseif ($bot->message()->text === $bot->__('kbd.feedback')) {
+        (new FeedBackConversation())($bot);
     }
 });
 $bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);

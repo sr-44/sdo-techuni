@@ -1,5 +1,6 @@
 <?php
 return [
+    'choose_lang' => '🇬🇧Choose the language you want to communicate with the bot',
     'greeting_text' => 'Hello :name, Welcome to our bot!',
     'main_menu' => 'You are in the main menu',
     'send_login' => 'Send login:',
@@ -13,7 +14,11 @@ return [
     'kbd.lang' => 'Change Language',
     'kbd.about' => 'About bot',
     'kbd.logout' => 'Logout',
+    'kbd.cancel' => 'Cancel',
+    'kbd.feedback' => 'Send feedback',
     'kbd.show.sessions' => 'Exam table',
+    'send_feedback' => 'Send your feedback:',
+    'feedback_sent' => 'Your feedback has been sent successfully!',
     'about' => 'This bot was created for TTU students to get their ratings and other information.',
     'student_info' => 'Student information:' . PHP_EOL . 'Name: :name' . PHP_EOL . 'Login: :login',
 
