@@ -11,6 +11,7 @@ use SergiX44\Nutgram\Nutgram;
 
 class AdminDashboardConversation extends Conversation
 {
+    protected bool $skipHandlers = true;
 
     /**
      * @throws InvalidArgumentException
