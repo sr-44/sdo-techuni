@@ -62,4 +62,21 @@ class Keyboards
         return $markup;
 
     }
+
+    public static function adminDashboard(): InlineKeyboardMarkup
+    {
+        $markup = new InlineKeyboardMarkup();
+        $markup->addRow(InlineKeyboardButton::make('Отправить рассылку', callback_data: 'bulk_message'));
+        $markup->addRow(InlineKeyboardButton::make('Отмена', callback_data: 'cancel'));
+        return $markup;
+    }
+
+    public static function bulkMessage(): InlineKeyboardMarkup
+    {
+        $markup = new InlineKeyboardMarkup();
+        $markup->addRow(InlineKeyboardButton::make('Переслать', callback_data: 'forward'));
+        $markup->addRow(InlineKeyboardButton::make('Отправить', callback_data: 'copy'));
+        $markup->addRow(InlineKeyboardButton::make('Отмена', callback_data: 'cancel'));
+        return $markup;
+    }
 }

@@ -8,6 +8,7 @@ return [
         'token' => $_ENV['API_KEY'],
         'username' => $_ENV['BOT_USERNAME'],
         'owner' => $_ENV['OWNER_ID'],
+        'webhook' => toBool($_ENV['WEBHOOK']),
     ],
 
     'database' => [
@@ -22,4 +23,7 @@ return [
     ],
     'encryption_key' => $_ENV['ENCRYPTION_KEY'],
     'debug' => toBool($_ENV['DEBUG']),
+    'tmp_dir' => __DIR__ . '/tmp',
+    'php_path' => $_ENV['PHP_PATH'],
+    'bulk_script' => __DIR__ . '/app/Admin/bulkMessage.php',
 ];

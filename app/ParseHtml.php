@@ -11,13 +11,11 @@ class ParseHtml
     private string $htmlTable = '';
 
 
-
     public function __construct(
         private readonly string $html
     )
     {
     }
-
 
     public function getHtmlTable(): string
     {
@@ -33,11 +31,9 @@ class ParseHtml
         return $studentInfo;
     }
 
-
     public function parseStudentId(): ?int
     {
         $html = $this->html;
-//        var_dump($html);
         $crawler = new Crawler($html);
         $scriptContent = $crawler->filterXPath('//script[contains(text(), "var id_student")]')->text();
         preg_match('/var id_student = (\d+);/', $scriptContent, $matches);
@@ -56,8 +52,6 @@ class ParseHtml
         return $this->parseSimpleTables()[0][2];
     }
 
-
-
     public function parseSubjectsTable(): static
     {
         $this->array = $this->parseSimpleTables();
@@ -69,8 +63,6 @@ class ParseHtml
         $this->array = $this->parseSimpleTables();
         return $this;
     }
-
-
 
     public function arrayToHtmlTable(array $theadTexts): static
     {
@@ -101,8 +93,6 @@ class ParseHtml
         return $this;
     }
 
-
-
     private function parseSimpleTables()
     {
         $crawler = new Crawler($this->html);
@@ -116,6 +106,4 @@ class ParseHtml
 
         return $result;
     }
-
-
 }

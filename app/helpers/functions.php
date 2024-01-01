@@ -21,6 +21,9 @@ if (!function_exists('config')) {
 
 
 if (!function_exists('encryptData')) {
+    /**
+     * @throws Exception
+     */
     function encryptData(string $data): string
     {
         return base64_encode(Aes::encrypt($data, config('encryption_key')));

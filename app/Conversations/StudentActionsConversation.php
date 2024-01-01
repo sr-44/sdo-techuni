@@ -28,10 +28,7 @@ class StudentActionsConversation extends Conversation
      */
     public function start(Nutgram $bot): void
     {
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
+        $this->delMessage($bot);
 
         $user = User::where('user_id', $bot->userId())->first();
         if ($user->encrypted_login && $user->encrypted_password) {
@@ -57,6 +54,7 @@ class StudentActionsConversation extends Conversation
 
     /**
      * @throws InvalidArgumentException|GuzzleException
+     * @throws Exception
      */
     public function secondStep(Nutgram $bot): void
     {
@@ -64,11 +62,8 @@ class StudentActionsConversation extends Conversation
             $this->start($bot);
             return;
         }
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
 
+        $this->delMessage($bot);
         $bot->setUserData('login', encryptData($bot->message()->text));
         $bot->sendMessage($bot->__('send_password'));
         $this->next('setPassword');
@@ -76,6 +71,7 @@ class StudentActionsConversation extends Conversation
 
     /**
      * @throws InvalidArgumentException|GuzzleException
+     * @throws Exception
      */
     public function setPassword(Nutgram $bot): void
     {
@@ -83,10 +79,7 @@ class StudentActionsConversation extends Conversation
             $this->start($bot);
             return;
         }
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
+        $this->delMessage($bot);
 
         $bot->setUserData('password', encryptData($bot->message()->text));
         $this->sendRequest($bot);
@@ -128,13 +121,9 @@ class StudentActionsConversation extends Conversation
      */
     protected function showRating(Nutgram $bot): void
     {
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
-
+        $this->delMessage($bot);
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = 'tmp/' . $bot->userId();
+        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
@@ -149,11 +138,11 @@ class StudentActionsConversation extends Conversation
             $bot->__('rating_table.teacher'),
         ];
         $html = $pars->parseSubjectsTable()->arrayToHtmlTable($threadText)->getHtmlTable();
-        echo $html;
         $imagePath = 'tmp/screens/' . $bot->userId() . '_' . Str::random() . '.jpg';
         ImageFromHtml::generate($html, $imagePath);
 
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
+        unlink($imagePath);
         $wait->delete();
     }
 
@@ -164,13 +153,10 @@ class StudentActionsConversation extends Conversation
      */
     protected function showInfo(Nutgram $bot): void
     {
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
 
+        $this->delMessage($bot);
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = 'tmp/' . $bot->userId();
+        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=study&action=myinfo', $cookieFile);
 
         $body = $response->getBody()->__toString();
@@ -194,12 +180,12 @@ class StudentActionsConversation extends Conversation
                 $photo = fopen('http://sdo.techuni.tj/userfiles/man.png', 'r');
             }
 
-            $wait->delete();
             $caption = $bot->__('student_info', [
                 ':login' => $login,
                 ':name' => $studentInfo['name'],
             ]);
             $bot->sendPhoto(InputFile::make($photo), caption: $caption, parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
+            $wait->delete();
         }
 
     }
@@ -210,13 +196,9 @@ class StudentActionsConversation extends Conversation
      */
     public function showExams(Nutgram $bot): void
     {
-        try {
-            $bot->message()->delete();
-        } catch (Throwable) {
-        }
-
+        $this->delMessage($bot);
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = 'tmp/' . $bot->userId();
+        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
@@ -232,18 +214,19 @@ class StudentActionsConversation extends Conversation
         ImageFromHtml::generate($html, $imagePath);
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
         $wait->delete();
+        unlink($imagePath);
     }
 
     /**
-     * @throws GuzzleException|InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function logOut(Nutgram $bot): void
     {
         $user = User::where('user_id', $bot->userId())->first();
-        $user->encrypted_login = '';
-        $user->encrypted_password = '';
+        $user->encrypted_login = null;
+        $user->encrypted_password = null;
         $user->save();
-        unlink('tmp/' . $bot->userId());
+        unlink(config('tmp_dir') . '/cookies/' . $bot->userId());
         (new StartCommand())($bot);
 //        $this->start($bot);
     }
@@ -256,13 +239,13 @@ class StudentActionsConversation extends Conversation
      */
     private function sendRequest(Nutgram $bot): void
     {
-        $wait = $bot->sendMessage($bot->__('please_wait'))->message_id;
+        $wait = $bot->sendMessage($bot->__('please_wait'));
         $data = [
             'login' => decryptData($bot->getUserData('login')),
             'password' => decryptData($bot->getUserData('password')),
         ];
 
-        $cookieFile = 'tmp/' . $bot->userId();
+        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $cookieJar = new FileCookieJar($cookieFile, true);
         $client = new Client([
             'cookies' => $cookieJar,
@@ -272,7 +255,7 @@ class StudentActionsConversation extends Conversation
             'form_params' => $data,
             'allow_redirects' => true,
         ]);
-        $bot->deleteMessage($bot->chatId(), $wait);
+        $wait->delete();
         if (str_contains($response->getBody(), 'Дарсҳои ман')) {
             $user = User::where('user_id', $bot->userId())->first();
             $user->encrypted_login = $bot->getUserData('login');
@@ -287,5 +270,14 @@ class StudentActionsConversation extends Conversation
         $bot->sendMessage($bot->__('wrong_datas'));
         //(new StartCommand())($bot);
         $this->firstStep($bot);
+    }
+
+
+    private function delMessage(Nutgram $bot): void
+    {
+        try {
+            $bot->message()->delete();
+        } catch (Throwable) {
+        }
     }
 }
