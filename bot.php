@@ -65,6 +65,9 @@ $bot->onMessageType(MessageType::TEXT, function (Nutgram $bot) {
 $bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);
 
 $bot->onCommand('admin', AdminDashboardConversation::class)->middleware(IsBotOwnerMiddleware::class);
+$bot->fallback(function (Nutgram $bot) {
+    (new CancelHandler())($bot);
+});
 
 
 try {
