@@ -60,6 +60,8 @@ $bot->onMessageType(MessageType::TEXT, function (Nutgram $bot) {
         $bot->sendMessage($bot->__('about'));
     } elseif ($bot->message()->text === $bot->__('kbd.feedback')) {
         (new FeedBackConversation())($bot);
+    } else {
+        (new CancelHandler())($bot);
     }
 });
 $bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);
