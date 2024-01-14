@@ -21,9 +21,15 @@ return [
         'collation' => 'utf8mb4_bin',
         'prefix' => '',
     ],
+    'dirs' => [
+      'tmp' => __DIR__ . '/tmp',
+      'userfiles' => __DIR__ . '/userfiles',
+        'cookies' => __DIR__ . '/tmp/cookies',
+        'screens' => __DIR__ . '/tmp/screens',
+        'bot_cache' => __DIR__ . '/tmp/bot-cache',
+    ],
     'encryption_key' => $_ENV['ENCRYPTION_KEY'],
     'debug' => toBool($_ENV['DEBUG']),
-    'tmp_dir' => __DIR__ . '/tmp',
     'php_path' => $_ENV['PHP_PATH'],
     'bulk_script' => __DIR__ . '/app/Admin/bulkMessage.php',
 ];

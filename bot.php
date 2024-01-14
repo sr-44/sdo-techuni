@@ -34,8 +34,7 @@ try {
 } catch (ReflectionException $e) {
 }
 
-$nutgramPsr6Cache = new FilesystemAdapter(directory: config('tmp_dir') . '/bot-cache');
-$nutgramPsr16Cache = new Psr16Cache($nutgramPsr6Cache);
+$nutgramPsr16Cache = new Psr16Cache(new FilesystemAdapter(directory: config('dirs.bot_cache')));
 $config = new Configuration(botName: config('bot.username'), cache: $nutgramPsr16Cache, logger: ConsoleLogger::class);
 
 $bot = new Nutgram(config('bot.token'), $config);

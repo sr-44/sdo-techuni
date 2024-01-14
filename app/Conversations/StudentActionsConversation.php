@@ -128,7 +128,7 @@ class StudentActionsConversation extends Conversation
         $bot = $this->bot;
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
+        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
         $body = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile)->getBody();
         $pars = new ParseHtml($body);
         $threadText = [
@@ -142,7 +142,7 @@ class StudentActionsConversation extends Conversation
             $bot->__('rating_table.teacher'),
         ];
         $html = $pars->parseSubjectsTable()->arrayToHtmlTable($threadText)->getHtmlTable();
-        $imagePath = 'tmp/screens/' . $bot->userId() . '_' . Str::random() . '.jpg';
+        $imagePath = config('dirs.screens') . '/' . $bot->userId() . '_' . Str::random() . '.jpg';
         ImageFromHtml::generate($html, $imagePath);
 
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
@@ -160,7 +160,7 @@ class StudentActionsConversation extends Conversation
         $bot = $this->bot;
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
+        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=study&action=myinfo', $cookieFile);
 
         $body = $response->getBody()->__toString();
@@ -177,9 +177,9 @@ class StudentActionsConversation extends Conversation
         $studentInfo = $parsed->parseStudentInfo();
         $login = decryptData($bot->getUserData('login'));
         if ($studentInfo['image']) {
-            $headers = get_headers($this->uri . $studentInfo['image']);
+            $headers = get_headers($studentInfo['image']);
             if (str_contains($headers[0], '200')) {
-                $photo = fopen($this->uri . $studentInfo['image'], 'r');
+                $photo = fopen($studentInfo['image'], 'r');
             } else {
                 $photo = fopen('http://sdo.techuni.tj/userfiles/man.png', 'r');
             }
@@ -203,7 +203,7 @@ class StudentActionsConversation extends Conversation
         $bot = $this->bot;
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
+        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
@@ -215,7 +215,7 @@ class StudentActionsConversation extends Conversation
             $bot->__('exam_table.question_qty'),
         ];
         $html = $pars->parseExamsTable()->arrayToHtmlTable($threadText)->getHtmlTable();
-        $imagePath = 'tmp/screens/' . $bot->userId() . '_' . Str::random() . '.jpg';
+        $imagePath = config('dirs.screens') . '/' . $bot->userId() . '_' . Str::random() . '.jpg';
         ImageFromHtml::generate($html, $imagePath);
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
         $wait->delete();
@@ -232,7 +232,7 @@ class StudentActionsConversation extends Conversation
         $user->encrypted_login = null;
         $user->encrypted_password = null;
         $user->save();
-        unlink(config('tmp_dir') . '/cookies/' . $bot->userId());
+        unlink(config('dirs.cookies') . '/' . $bot->userId());
         (new StartCommand())($bot);
 //        $this->start($bot);
     }
@@ -252,7 +252,7 @@ class StudentActionsConversation extends Conversation
             'password' => decryptData($bot->getUserData('password')),
         ];
 
-        $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
+        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
         $cookieJar = new FileCookieJar($cookieFile, true);
         $client = new Client([
             'cookies' => $cookieJar,
