@@ -51,26 +51,29 @@ $bot->onCommand('start', CancelHandler::class);
 $bot->onCommand('lang', ChangeLanguageCommand::class);
 $bot->onCommand('login', StudentActionsConversation::class);
 
-$bot->onMessageType(MessageType::TEXT, function (Nutgram $bot) {
-    if ($bot->message()->text === $bot->__('kbd.login')) {
-        (new StudentActionsConversation())($bot);
-    } elseif ($bot->message()->text === $bot->__('kbd.lang')) {
-        (new ChangeLanguageCommand())($bot);
-    } elseif ($bot->message()->text === $bot->__('kbd.about')) {
-        $bot->sendMessage($bot->__('about'));
-    } elseif ($bot->message()->text === $bot->__('kbd.feedback')) {
-        (new FeedBackConversation())($bot);
-    } else {
-        (new CancelHandler())($bot);
-    }
+$bot->onMessageType(MessageType::TEXT, function (Nutgram $bot){
+   switch ($bot->message()->text){
+       case $bot->__('kbd.login'):
+           (new StudentActionsConversation())($bot);
+           break;
+       case $bot->__('kbd.lang'):
+           (new ChangeLanguageCommand())($bot);
+           break;
+       case $bot->__('kbd.about'):
+           $bot->sendMessage($bot->__('about'));
+           break;
+       case $bot->__('kbd.feedback'):
+           (new FeedBackConversation())($bot);
+           break;
+       default:
+           (new CancelHandler())($bot);
+   }
 });
-$bot->onCallbackQueryData('lang_.*', RegisterUserCommand::class);
+
+$bot->onCallbackQueryData('lang_{langCode}', RegisterUserCommand::class);
 
 $bot->onCommand('admin', AdminDashboardConversation::class)->middleware(IsBotOwnerMiddleware::class);
-$bot->fallback(function (Nutgram $bot) {
-    (new CancelHandler())($bot);
-});
-
+$bot->fallback(CancelHandler::class);
 
 try {
     $bot->run();

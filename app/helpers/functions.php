@@ -49,7 +49,7 @@ if (!function_exists('getRequest')) {
         $cookieJar = new FileCookieJar($cookiePath, true);
         return (new Client([
             'cookies' => $cookieJar,
-            'timeout' => 10,
+//            'timeout' => 10,
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0',
             ],

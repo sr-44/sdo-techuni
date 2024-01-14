@@ -12,10 +12,9 @@ class RegisterUserCommand
     /**
      * @throws InvalidArgumentException
      */
-    public function __invoke(Nutgram $bot): void
+    public function __invoke(Nutgram $bot, $langCode): void
     {
-        $lang_code = explode('lang_', $bot->callbackQuery()->data, limit: 2)[1];
-        if (!in_array($lang_code, ['en', 'ru', 'tg'])) {
+        if (!in_array($langCode, ['en', 'ru', 'tg'])) {
             $bot->answerCallbackQuery(text: $bot->__('Language not available'));
             return;
         }
@@ -25,16 +24,16 @@ class RegisterUserCommand
             User::create([
                 'user_id' => $bot->userId(),
                 'username' => $bot->user()->username,
-                'language' => $lang_code,
+                'language' => $langCode,
             ]);
-            $bot->setUserData('lang_code', $lang_code);
+            $bot->setUserData('lang_code', $langCode);
             $bot->sendMessage($bot->__('greeting_text', [':name' => $bot->user()->first_name]));
         } else {
-            $user->language = $lang_code;
+            $user->language = $langCode;
             $user->save();
 //            $bot->setUserData('lang_code', $lang_code);
         }
-        $bot->setUserData('lang_code', $lang_code);
+        $bot->setUserData('lang_code', $langCode);
         (new StartCommand())($bot);
         $bot->message()?->delete();
 

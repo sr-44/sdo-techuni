@@ -28,19 +28,18 @@ class StudentActionsConversation extends Conversation
      */
     public function start(Nutgram $bot): void
     {
-        $this->delMessage($bot);
+        $this->delMessage();
 
         $user = User::where('user_id', $bot->userId())->first();
         if ($user->encrypted_login && $user->encrypted_password) {
             $bot->setUserData('login', $user->encrypted_login);
             $bot->setUserData('password', $user->encrypted_password);
-            $this->sendRequest($bot);
+            $this->sendRequest();
             return;
         }
         $this->firstStep($bot);
 
     }
-
 
     /**
      * @throws InvalidArgumentException
@@ -63,7 +62,7 @@ class StudentActionsConversation extends Conversation
             return;
         }
 
-        $this->delMessage($bot);
+        $this->delMessage();
         $bot->setUserData('login', encryptData($bot->message()->text));
         $bot->sendMessage($bot->__('send_password'));
         $this->next('setPassword');
@@ -79,10 +78,10 @@ class StudentActionsConversation extends Conversation
             $this->start($bot);
             return;
         }
-        $this->delMessage($bot);
+        $this->delMessage();
 
         $bot->setUserData('password', encryptData($bot->message()->text));
-        $this->sendRequest($bot);
+        $this->sendRequest();
     }
 
 
@@ -101,16 +100,21 @@ class StudentActionsConversation extends Conversation
      */
     public function actions(Nutgram $bot): void
     {
-        if ($bot->message()->text === $bot->__('kbd.show.rating')) {
-            $this->showRating($bot);
-        } elseif ($bot->message()->text === $bot->__('kbd.show.info')) {
-            $this->showInfo($bot);
-        } elseif ($bot->message()->text === $bot->__('kbd.logout')) {
-            $this->logOut($bot);
-        } elseif ($bot->message()->text === $bot->__('kbd.show.sessions')) {
-            $this->showExams($bot);
-        } else {
-            $bot->sendMessage($bot->__('choose_action'), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
+        switch ($bot->message()->text) {
+            case $bot->__('kbd.show.rating'):
+                $this->showRating();
+                break;
+            case $bot->__('kbd.show.info'):
+                $this->showInfo();
+                break;
+            case $bot->__('kbd.logout'):
+                $this->logOut();
+                break;
+            case $bot->__('kbd.show.sessions'):
+                $this->showExams();
+                break;
+            default:
+                $bot->sendMessage($bot->__('choose_action'), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
         }
     }
 
@@ -119,13 +123,13 @@ class StudentActionsConversation extends Conversation
      * @throws GuzzleException
      * @throws InvalidArgumentException
      */
-    protected function showRating(Nutgram $bot): void
+    private function showRating(): void
     {
-        $this->delMessage($bot);
+        $bot = $this->bot;
+        $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
-        $response = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile);
-        $body = $response->getBody();
+        $body = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile)->getBody();
         $pars = new ParseHtml($body);
         $threadText = [
             $bot->__('rating_table.subject_name'),
@@ -151,10 +155,10 @@ class StudentActionsConversation extends Conversation
      * @throws GuzzleException
      * @throws Exception
      */
-    protected function showInfo(Nutgram $bot): void
+    private function showInfo(): void
     {
-
-        $this->delMessage($bot);
+        $bot = $this->bot;
+        $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=study&action=myinfo', $cookieFile);
@@ -194,9 +198,10 @@ class StudentActionsConversation extends Conversation
      * @throws GuzzleException
      * @throws InvalidArgumentException
      */
-    public function showExams(Nutgram $bot): void
+    private function showExams(): void
     {
-        $this->delMessage($bot);
+        $bot = $this->bot;
+        $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = config('tmp_dir') . '/cookies/' . $bot->userId();
         $response = getRequest($this->uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
@@ -220,8 +225,9 @@ class StudentActionsConversation extends Conversation
     /**
      * @throws InvalidArgumentException
      */
-    protected function logOut(Nutgram $bot): void
+    private function logOut(): void
     {
+        $bot = $this->bot;
         $user = User::where('user_id', $bot->userId())->first();
         $user->encrypted_login = null;
         $user->encrypted_password = null;
@@ -237,8 +243,9 @@ class StudentActionsConversation extends Conversation
      * @throws InvalidArgumentException
      * @throws Exception
      */
-    private function sendRequest(Nutgram $bot): void
+    private function sendRequest(): void
     {
+        $bot = $this->bot;
         $wait = $bot->sendMessage($bot->__('please_wait'));
         $data = [
             'login' => decryptData($bot->getUserData('login')),
@@ -273,10 +280,10 @@ class StudentActionsConversation extends Conversation
     }
 
 
-    private function delMessage(Nutgram $bot): void
+    private function delMessage(): void
     {
         try {
-            $bot->message()->delete();
+            $this->bot->message()->delete();
         } catch (Throwable) {
         }
     }

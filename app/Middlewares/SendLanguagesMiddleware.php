@@ -15,7 +15,7 @@ class SendLanguagesMiddleware
      */
     public function __invoke(Nutgram $bot, $next): void
     {
-        if ($bot->callbackQuery() === null) {
+        if ($bot->callbackQuery() === null || !str_contains($bot->callbackQuery()->data, 'lang_')) {
             if ($bot->getUserData('lang_code') === null) {
                 $user = User::where('user_id', $bot->userId())->first();
                 if (!$user) {
