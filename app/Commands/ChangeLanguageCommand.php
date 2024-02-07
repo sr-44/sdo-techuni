@@ -12,7 +12,7 @@ class ChangeLanguageCommand
     public function __invoke(Nutgram $bot): void
     {
         try {
-            $bot->message()->delete();
+            $bot->message()?->delete();
         } catch (Throwable) {
         }
         $bot->sendMessage(

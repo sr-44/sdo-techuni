@@ -7,9 +7,9 @@ use App\ImageFromHtml;
 use App\Models\User;
 use App\Nutgram\Keyboards;
 use App\ParseHtml;
+use App\Request;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Str;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -21,7 +21,7 @@ use Throwable;
 
 class StudentActionsConversation extends Conversation
 {
-    private string $uri = 'http://sdo.techuni.tj';
+    public static string $uri = 'http://sdo.techuni.tj';
 
     /**
      * @throws InvalidArgumentException|GuzzleException
@@ -128,8 +128,8 @@ class StudentActionsConversation extends Conversation
         $bot = $this->bot;
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
-        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
-        $body = getRequest($this->uri . '/student/?option=study&action=list', $cookieFile)->getBody();
+        $request = new Request($bot->userId());
+        $body = $request->getRatingTable();
         $pars = new ParseHtml($body);
         $threadText = [
             $bot->__('rating_table.subject_name'),
@@ -147,7 +147,7 @@ class StudentActionsConversation extends Conversation
 
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
         unlink($imagePath);
-        $wait->delete();
+        $wait?->delete();
     }
 
 
@@ -161,16 +161,16 @@ class StudentActionsConversation extends Conversation
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
-        $response = getRequest($this->uri . '/student/?option=study&action=myinfo', $cookieFile);
+        $response = getRequest(self::$uri . '/student/?option=study&action=myinfo', $cookieFile);
 
         $body = $response->getBody()->__toString();
         $parsed = new ParseHtml($body);
         $studentId = $parsed->parseStudentId();
         $client = new Client();
-        $response = $client->post($this->uri . '/modules/students/students_ajax.php?option=getstudentinfo', [
+        $response = $client->post(self::$uri . '/modules/students/students_ajax.php?option=getstudentinfo', [
             'form_params' => [
                 'id_student' => $studentId,
-                'my_url' => $this->uri,
+                'my_url' => self::$uri,
             ],
         ]);
         $parsed = new ParseHtml($response->getBody());
@@ -179,9 +179,9 @@ class StudentActionsConversation extends Conversation
         if ($studentInfo['image']) {
             $headers = get_headers($studentInfo['image']);
             if (str_contains($headers[0], '200')) {
-                $photo = fopen($studentInfo['image'], 'r');
+                $photo = fopen($studentInfo['image'], 'rb');
             } else {
-                $photo = fopen('http://sdo.techuni.tj/userfiles/man.png', 'r');
+                $photo = fopen('http://sdo.techuni.tj/userfiles/man.png', 'rb');
             }
 
             $caption = $bot->__('student_info', [
@@ -189,7 +189,7 @@ class StudentActionsConversation extends Conversation
                 ':name' => $studentInfo['name'],
             ]);
             $bot->sendPhoto(InputFile::make($photo), caption: $caption, parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
-            $wait->delete();
+            $wait?->delete();
         }
 
     }
@@ -204,7 +204,7 @@ class StudentActionsConversation extends Conversation
         $this->delMessage();
         $wait = $bot->sendMessage($bot->__('please_wait'), reply_markup: Keyboards::removeKeyboards());
         $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
-        $response = getRequest($this->uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
+        $response = getRequest(self::$uri . '/student/?option=sessions&action=sessions_list', $cookieFile);
         $body = $response->getBody();
         $pars = new ParseHtml($body);
         $threadText = [
@@ -218,7 +218,7 @@ class StudentActionsConversation extends Conversation
         $imagePath = config('dirs.screens') . '/' . $bot->userId() . '_' . Str::random() . '.jpg';
         ImageFromHtml::generate($html, $imagePath);
         $bot->sendPhoto(InputFile::make(fopen($imagePath, 'rb+')), parse_mode: ParseMode::HTML, reply_markup: Keyboards::actionsKeyboards($bot));
-        $wait->delete();
+        $wait?->delete();
         unlink($imagePath);
     }
 
@@ -247,30 +247,16 @@ class StudentActionsConversation extends Conversation
     {
         $bot = $this->bot;
         $wait = $bot->sendMessage($bot->__('please_wait'));
-        $data = [
-            'login' => decryptData($bot->getUserData('login')),
-            'password' => decryptData($bot->getUserData('password')),
-        ];
 
-        $cookieFile = config('dirs.cookies') . '/' . $bot->userId();
-        $cookieJar = new FileCookieJar($cookieFile, true);
-        $client = new Client([
-            'cookies' => $cookieJar,
-        ]);
-
-        $response = $client->request('POST', $this->uri . '/?option=auth', [
-            'form_params' => $data,
-            'allow_redirects' => true,
-        ]);
-        $wait->delete();
-        if (str_contains($response->getBody(), 'Дарсҳои ман')) {
+        $login = decryptData($bot->getUserData('login'));
+        $password = decryptData($bot->getUserData('password'));
+        $request = new Request($bot->userId());
+        $wait?->delete();
+        if ($request->loginToSite($login, $password)) {
             $user = User::where('user_id', $bot->userId())->first();
             $user->encrypted_login = $bot->getUserData('login');
             $user->encrypted_password = $bot->getUserData('password');
             $user->save();
-            if (str_contains($response->getBody(), 'Руйхати дарсҳо')) {
-                $bot->setUserData('sessions', true);
-            }
             $this->actionsMenu($bot);
             return;
         }
@@ -283,7 +269,7 @@ class StudentActionsConversation extends Conversation
     private function delMessage(): void
     {
         try {
-            $this->bot->message()->delete();
+            $this->bot->message()?->delete();
         } catch (Throwable) {
         }
     }

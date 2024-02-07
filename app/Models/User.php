@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property ?string $encrypted_login
+ * @property mixed $encrypted_password
+ */
 class User extends Model
 {
     protected $table = 'users';

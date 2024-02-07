@@ -22,7 +22,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 
 require_once 'vendor/autoload.php';
-if (config('debug') === true) {
+if (config('debug')) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -39,7 +39,7 @@ $config = new Configuration(botName: config('bot.username'), cache: $nutgramPsr1
 
 $bot = new Nutgram(config('bot.token'), $config);
 
-if (config('bot.webhook') === true) {
+if (config('bot.webhook')) {
     $bot->setRunningMode(Webhook::class);
 }
 $bot->middleware(SendLanguagesMiddleware::class);
