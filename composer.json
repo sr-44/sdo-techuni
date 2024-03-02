@@ -1,6 +1,6 @@
 {
   "require": {
-    "nutgram/nutgram": "4.13.0",
+    "nutgram/nutgram": "4.16.0",
     "knplabs/knp-snappy": "^1.4",
     "vlucas/phpdotenv": "^5.5",
     "symfony/cache": "^6.3",
